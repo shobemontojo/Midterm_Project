@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:midterm_project/constants.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,20 +18,55 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Notes'),
+        title: Text('Memorery'),
         actions: [
           IconButton(
-              onPressed: () {}, icon: FaIcon(FontAwesomeIcons.rightFromBracket))
+            onPressed: () {},
+            icon: FaIcon(FontAwesomeIcons.rightFromBracket),
+            style: IconButton.styleFrom(
+              backgroundColor: primary,
+              foregroundColor: white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(
+                  color: black,
+                ),
+              ),
+            ),
+          ),
         ], //icon button
       ), //AppBar
+      floatingActionButton: FloatingActionButton.large(
+        onPressed: () {},
+        child: FaIcon(FontAwesomeIcons.plus),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               decoration: InputDecoration(
-                labelText: 'Search notes...',
-                prefixIcon: Icon(FontAwesomeIcons.magnifyingGlass),
+                hintText: 'Search notes...',
+                hintStyle: TextStyle(fontSize: 12),
+                prefixIcon: Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
+                fillColor: white,
+                filled: true,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+                prefixIconConstraints: BoxConstraints(
+                  minWidth: 42,
+                  minHeight: 42,
+                ),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: primary,
+                    )),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: primary,
+                    )),
               ),
             ),
             Row(
@@ -58,6 +94,7 @@ class _MainPageState extends State<MainPage> {
             ),
             Expanded(
               child: GridView.builder(
+                  itemCount: 15,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 4,
