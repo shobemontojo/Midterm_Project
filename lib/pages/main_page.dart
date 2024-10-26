@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:midterm_project/core/constants.dart';
+import 'package:midterm_project/pages/new_or_edit_note_page.dart';
 import 'package:midterm_project/widgets/note_fab.dart';
 import 'package:midterm_project/widgets/note_grid.dart';
+import 'package:midterm_project/widgets/note_icon_button.dart';
+import 'package:midterm_project/widgets/note_icon_button_outlined.dart';
 import 'package:midterm_project/widgets/note_list.dart';
 import 'package:midterm_project/widgets/search_field.dart';
 
@@ -30,20 +33,22 @@ class _MainPageState extends State<MainPage> {
           style: TextStyle(fontWeight: FontWeight.w500),
         ),
         actions: [
-          IconButton(
+          NoteIconButtonOutlined(
+            icon: FontAwesomeIcons.rightFromBracket,
             onPressed: () {},
-            icon: FaIcon(FontAwesomeIcons.rightFromBracket),
-            style: IconButton.styleFrom(
-              backgroundColor: primary,
-              foregroundColor: white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-            ),
           ),
         ], //icon button
       ), //AppBar
-      floatingActionButton: NoteFab(),
+      floatingActionButton: NoteFab(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewOrEditNotePage(),
+            ),
+          );
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -51,28 +56,18 @@ class _MainPageState extends State<MainPage> {
             SearchField(), //serachfield na file
             Row(
               children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      //movement sa arrow button
-                      isDescending =
-                          !isDescending; //pag naka up ang arrow mahimong down and vice versa
-                    });
-                  },
-                  icon: FaIcon(
-                    isDescending
+                NoteIconButton(
+                    icon: isDescending
                         ? FontAwesomeIcons.arrowDown //either up or down
                         : FontAwesomeIcons.arrowUp,
-                  ),
-                  padding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
-                  constraints: BoxConstraints(),
-                  style: IconButton.styleFrom(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  iconSize: 18,
-                  color: gray700,
-                ),
+                    onPressed: () {
+                      setState(() {
+                        //movement sa arrow button
+                        isDescending =
+                            !isDescending; //pag naka up ang arrow mahimong down and vice versa
+                      });
+                    }),
+
                 SizedBox(width: 16),
                 DropdownButton(
                     value: dropdownValue,
@@ -87,25 +82,16 @@ class _MainPageState extends State<MainPage> {
                       });
                     }),
                 Spacer(), //THREE BARS BUTTON
-                IconButton(
+                NoteIconButton(
+                  icon: isGrid
+                      ? FontAwesomeIcons.tableCellsLarge
+                      : FontAwesomeIcons.bars,
+                  size: 18,
                   onPressed: () {
                     setState(() {
                       isGrid = !isGrid;
                     });
                   },
-                  icon: FaIcon(
-                    isGrid
-                        ? FontAwesomeIcons.tableCellsLarge
-                        : FontAwesomeIcons.bars,
-                  ),
-                  padding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
-                  constraints: BoxConstraints(),
-                  style: IconButton.styleFrom(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  iconSize: 18,
-                  color: gray700,
                 ),
               ],
             ),
