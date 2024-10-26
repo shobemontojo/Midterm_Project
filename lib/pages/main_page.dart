@@ -44,7 +44,9 @@ class _MainPageState extends State<MainPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NewOrEditNotePage(),
+              builder: (context) => NewOrEditNotePage(
+                isNewNote: true,
+              ),
             ),
           );
         },
