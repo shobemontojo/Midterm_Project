@@ -171,10 +171,20 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                             context: context,
                             builder: (context) => Center(
                               child: Material(
+                                type: MaterialType.transparency,
                                 child: Container(
                                   width:
                                       MediaQuery.sizeOf(context).width * 0.75,
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.all(24.0),
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment:
@@ -188,6 +198,9 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
+                                      SizedBox(
+                                        height: 24,
+                                      ),
                                       TextField(
                                         decoration: InputDecoration(
                                           hintText: 'Add tag (< 16 characters)',
@@ -199,17 +212,26 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
                                           ),
                                         ),
                                       ),
-                                      ElevatedButton(
+                                      SizedBox(
+                                        height: 24,
+                                      ),
+                                      DecoratedBox(
+                                        decoration: BoxDecoration(),
+                                        child: ElevatedButton(
                                           onPressed: () {},
                                           child: Text('Add tag'),
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor: primary,
-                                              foregroundColor: white,
-                                              side: BorderSide(color: black),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)))),
+                                            backgroundColor: primary,
+                                            foregroundColor: white,
+                                            side: BorderSide(color: black),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            elevation: 0,
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
