@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:midterm_project/change_notifiers/new_note_controller.dart';
 import 'package:midterm_project/core/constants.dart';
 import 'package:midterm_project/widgets/note_icon_button.dart';
 import 'package:midterm_project/widgets/note_icon_button_outlined.dart';
+import 'package:provider/provider.dart';
 
 class NewOrEditNotePage extends StatefulWidget {
   const NewOrEditNotePage({required this.isNewNote, super.key});
@@ -15,14 +17,15 @@ class NewOrEditNotePage extends StatefulWidget {
 }
 
 class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
+  late final NewNoteController newNoteController;
   late final QuillController quillController;
   late final FocusNode focusNode;
-  late bool readOnly;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    newNoteController = context.read<NewNoteController>();
 
     quillController = QuillController.basic();
 
@@ -30,15 +33,14 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
 
     if (widget.isNewNote) {
       focusNode.requestFocus();
-      readOnly = false;
+      newNoteController.readOnly = false;
     } else {
-      readOnly = true;
+      newNoteController.readOnly = true;
     }
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     quillController.dispose();
     super.dispose();
   }
@@ -59,17 +61,21 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
           style: TextStyle(fontWeight: FontWeight.w500),
         ),
         actions: [
-          NoteIconButtonOutlined(
-            icon: readOnly ? FontAwesomeIcons.pen : FontAwesomeIcons.bookOpen,
-            onPressed: () {
-              readOnly = !readOnly;
+          Selector<NewNoteController, bool>(
+            selector: (context, newNoteController) =>
+                newNoteController.readOnly,
+            builder: (context, readOnly, child) => NoteIconButtonOutlined(
+              icon: readOnly ? FontAwesomeIcons.pen : FontAwesomeIcons.bookOpen,
+              onPressed: () {
+                newNoteController.readOnly = !readOnly;
 
-              if (readOnly) {
-                focusNode.unfocus();
-              } else {
-                focusNode.requestFocus();
-              }
-            },
+                if (readOnly) {
+                  focusNode.unfocus();
+                } else {
+                  focusNode.requestFocus();
+                }
+              },
+            ),
           ),
           NoteIconButtonOutlined(
             icon: FontAwesomeIcons.check,
@@ -77,113 +83,183 @@ class _NewOrEditNotePageState extends State<NewOrEditNotePage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          TextField(
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-            decoration: InputDecoration(
-              hintText: 'Title here',
-              hintStyle: TextStyle(
-                color: gray300,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Selector<NewNoteController, bool>(
+              selector: (context, controller) => controller.readOnly,
+              builder: (context, readOnly, child) => TextField(
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Title here',
+                  hintStyle: TextStyle(
+                    color: gray300,
+                  ),
+                  border: InputBorder.none,
+                ),
               ),
-              border: InputBorder.none,
             ),
-          ),
-          if (!widget.isNewNote) ...[
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    'Last Modified',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: gray500,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Text(
-                    '07 March 2024, 03:40 PM',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    'Created',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: gray500,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Text(
-                    '07 March 2024, 03:30 PM',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Row(
-                  children: [
-                    Text(
-                      'Tags',
+            if (!widget.isNewNote) ...[
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      'Last Modified',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: gray500,
                       ),
                     ),
-                    NoteIconButton(
-                      icon: FontAwesomeIcons.circlePlus,
-                      onPressed: () {},
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Text(
+                      '07 March 2024, 03:40 PM',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      'Created',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: gray500,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Text(
+                      '07 March 2024, 03:30 PM',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    children: [
+                      Text(
+                        ' Tags  ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: gray500,
+                        ),
+                      ),
+                      NoteIconButton(
+                        icon: FontAwesomeIcons.circlePlus,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => Center(
+                              child: Material(
+                                child: Container(
+                                  width:
+                                      MediaQuery.sizeOf(context).width * 0.75,
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Text(
+                                        'Add tag',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      TextField(
+                                        decoration: InputDecoration(
+                                          hintText: 'Add tag (< 16 characters)',
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            borderSide:
+                                                BorderSide(color: primary),
+                                          ),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                          onPressed: () {},
+                                          child: Text('Add tag'),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: primary,
+                                              foregroundColor: white,
+                                              side: BorderSide(color: black),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)))),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    'No tags added',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Divider(color: gray500, thickness: 2),
+            ),
+            Expanded(
+              child: Selector<NewNoteController, bool>(
+                selector: (_, controller) => controller.readOnly,
+                builder: (_, readOnly, __) => Column(
+                  children: [
+                    Expanded(
+                      child: QuillEditor.basic(
+                        configurations: QuillEditorConfigurations(
+                          // ignore: deprecated_member_use
+                          controller: quillController,
+                          placeholder: 'Note here...',
+                          expands: true,
+                          //readOnly: readOnly,
+                        ),
+                        focusNode: focusNode,
+                      ),
+                    ),
+                    //if (!readOnly) NoteToolbar(controller: quillController),
                   ],
                 ),
               ),
-              Expanded(
-                flex: 5,
-                child: Text(
-                  'No tags added',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(color: gray500, thickness: 2),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                decoration: InputDecoration(hintText: 'Note here...'),
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
